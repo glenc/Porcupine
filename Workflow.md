@@ -16,6 +16,7 @@
         - Lookup or summary for list operations
         - more detailed vm for individual gets
 1. Build out VM with properties and DTOs
+    - Add Mapping for VMs or DTOs
 1. Build out Query with properties
 1. Update Tests
     - Replace user type for admin vs. user
@@ -97,3 +98,15 @@
             .HasIndex(x => x.Code)
             .IsUnique();
     }
+
+## Simple DTO ##
+public record IndustrySummaryDto(int Id, string Name, string Description)
+{
+    private class Mapping : Profile
+    {
+        public Mapping()
+        {
+            CreateMap<Industry, IndustrySummaryDto>();
+        }
+    }
+}
