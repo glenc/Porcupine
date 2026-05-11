@@ -1,11 +1,3 @@
 namespace Porcupine.Domain.Events;
 
-public class PorcupineEvent<T> : BaseEvent 
-{ 
-    public T Entity { get; }
-
-    public PorcupineEvent(T entity)
-    {
-        Entity = entity;
-    }
-}
+public record PorcupineEvent<T>(T Entity) : BaseEvent {}
