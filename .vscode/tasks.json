@@ -1,0 +1,124 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create Entity",
+      "type": "shell",
+      "hide": false,
+      "command": "dotnet new mrc-entity -n ${input:name} -o src/Domain --project src/Domain/Domain.csproj",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Entity Tests",
+      "type": "shell",
+      "hide": false,
+      "command": "dotnet new mrc-entity-test -n ${input:name} -o tests/Domain.UnitTests --project src/Domain/Domain.csproj",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Use Case",
+      "type": "shell",
+      "hide": false,
+      "command": "dotnet new mrc-usecase -n ${input:name} -fn ${input:fn} -ut ${input:ut} -rt ${input:rt} -o src/Application --project src/Application/Application.csproj",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Endpoint",
+      "type": "shell",
+      "hide": false,
+      "command": "dotnet new mrc-endpoint -n ${input:name} -id ${input:id} -o src/WebApi --project src/WebApi/WebApi.csproj",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Use Case Tests",
+      "type": "shell",
+      "hide": false,
+      "command": "dotnet new mrc-usecase-test -n ${input:name} -fn ${input:fn} -ut ${input:ut} -rt ${input:rt} -o tests/Application.FunctionalTests --project src/Application/Application.csproj",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Entity and Tests",
+      "type": "shell",
+      "hide": false,
+      "command": "sh .scripts/mrc-entity-and-tests.sh -n ${input:name}",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Use Case and Tests",
+      "type": "shell",
+      "hide": false,
+      "command": "sh .scripts/mrc-usecase-and-tests.sh -n ${input:name} -f ${input:fn} -t ${input:ut} -r ${input:rt}",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Migration",
+      "type": "shell",
+      "hide": false,
+      "command": "dotnet ef migrations add \"${input:name}\" --project src/Infrastructure --startup-project src/WebApi --output-dir Data/Migrations",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "name",
+      "description": "Name",
+      "type": "promptString"
+    },
+    {
+      "id": "fn",
+      "description": "Feature Name",
+      "type": "promptString"
+    },
+    {
+      "id": "ut",
+      "description": "Usecase Type",
+      "type": "pickString",
+      "options": ["command", "query"],
+      "default": "command"
+    },
+    {
+      "id": "rt",
+      "description": "Return Type",
+      "type": "promptString"
+    },
+    {
+      "id": "id",
+      "description": "Id Parameter",
+      "type": "promptString"
+    }
+  ]
+}
