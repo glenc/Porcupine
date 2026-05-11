@@ -11,6 +11,8 @@ namespace Porcupine.Infrastructure.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
     : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext
 {
+    public DbSet<Industry> Industries => Set<Industry>();
+    public DbSet<MarketSegment> MarketSegments => Set<MarketSegment>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

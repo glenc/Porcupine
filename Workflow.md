@@ -1,5 +1,14 @@
 # Workflow #
 
+## Entity to DB ##
+1. Create a new Configuration in Infrastructure
+1. Add new DbSet<Entity> Entities { get; } to IApplicationDbContext
+1. Add new DbSet<Entity> Entities => Set<Entity>(); to ApplicationDbContext in Infrastructure
+1. Add any constraints in the OnModelCreating method of ApplicationDbContext (example below)
+1. Build
+1. Create a new Migration
+1. launch web api to make sure no errors occurred applying the migration
+
 ## New Use Case - Query ##
 1. Info Needed
     - Name of Query
@@ -76,3 +85,15 @@
 ## Auth Headers ##
     [Authorize]
     [Authorize(Roles = Roles.Administrator)]
+
+## DB Constraints ##
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // constraints
+        builder.Entity<Account>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
+    }
