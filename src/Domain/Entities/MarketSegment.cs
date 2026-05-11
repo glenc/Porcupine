@@ -2,7 +2,7 @@ using Porcupine.Domain.Events;
 
 namespace Porcupine.Domain.Entities;
 
-public class MarketSegment : BaseAuditableEntity
+public class MarketSegment : BaseChangeTrackingEntity
 {
     public string Name { get; private set; } = "";
     public string Description { get; private set; } = "";
@@ -23,23 +23,12 @@ public class MarketSegment : BaseAuditableEntity
     {
         Guard.Against.NullOrWhiteSpace(name);
 
-        var originalState = new Dictionary<string, object>();
+        ApplyChange(() => Name, x => Name = x, name);
+        ApplyChange(() => Description, x => Description = x, description);
 
-        if (name != Name)
+        if (HasChanges())
         {
-            originalState.Add("Name", Name);
-            Name = name;
-        }
-
-        if (description != Description)
-        {
-            originalState.Add("Description", Description);
-            Description = description;
-        }
-
-        if (originalState.Keys.Count > 0)
-        {
-            AddDomainEvent(new MarketSegmentUpdatedEvent(this, originalState));
+            AddDomainEvent(new MarketSegmentUpdatedEvent(this, GetAndClearChanges()));
         }
     }
 
