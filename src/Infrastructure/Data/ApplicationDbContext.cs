@@ -13,6 +13,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Industry> Industries => Set<Industry>();
     public DbSet<MarketSegment> MarketSegments => Set<MarketSegment>();
+    public DbSet<LifecycleStage> LifecycleStages => Set<LifecycleStage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
