@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Porcupine.Application.Industries.Commands.CreateIndustry;
+using Porcupine.Application.Industries.Commands.UpdateIndustry;
 using Porcupine.Application.Industries.Queries.GetIndustry;
 using Porcupine.Application.Industries.Queries.ListIndustries;
 
@@ -15,8 +16,8 @@ public class Industries : IEndpointGroup
         group
             .MapGet(ListIndustries)
             .MapGet(GetIndustry, "{industry_id}")
-            .MapPost(CreateIndustry);
-            //.MapPut(UpdateIndustry, "{industry_id}");
+            .MapPost(CreateIndustry)
+            .MapPut(UpdateIndustry, "{industry_id}");
         
         return group;
     }
@@ -39,15 +40,12 @@ public class Industries : IEndpointGroup
         return TypedResults.Created($"/{nameof(Industries)}/{result}", result);
     }
 
-    // public async Task<Results<NoContent, BadRequest>> UpdateIndustry(ISender sender, int industry_id, object command)
-    // {
-    //     await Task.Yield();
-    //     throw new NotImplementedException();
-        
-    //     // if (industry_id != command.Id) return TypedResults.BadRequest();
+    public async Task<Results<NoContent, BadRequest>> UpdateIndustry(ISender sender, int industry_id, UpdateIndustryCommand command)
+    {
+        if (industry_id != command.Id) return TypedResults.BadRequest();
 
-    //     // await sender.Send(command);
+        await sender.Send(command);
 
-    //     // return TypedResults.NoContent();
-    // }
+        return TypedResults.NoContent();
+    }
 }

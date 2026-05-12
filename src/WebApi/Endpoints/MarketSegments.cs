@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Porcupine.Application.MarketSegments.Commands.CreateMarketSegment;
+using Porcupine.Application.MarketSegments.Commands.UpdateMarketSegment;
 using Porcupine.Application.MarketSegments.Queries.GetMarketSegment;
 using Porcupine.Application.MarketSegments.Queries.ListMarketSegments;
 
@@ -15,8 +16,8 @@ public class MarketSegments : IEndpointGroup
         group
             .MapGet(ListMarketSegments)
             .MapGet(GetMarketSegment, "{segment_id}")
-            .MapPost(CreateMarketSegment);
-            //.MapPut(UpdateMarketSegment, "{segment_id}");
+            .MapPost(CreateMarketSegment)
+            .MapPut(UpdateMarketSegment, "{segment_id}");
         
         return group;
     }
@@ -39,15 +40,12 @@ public class MarketSegments : IEndpointGroup
         return TypedResults.Created($"/{nameof(MarketSegments)}/{result}", result);
     }
 
-    // public async Task<Results<NoContent, BadRequest>> UpdateMarketSegment(ISender sender, int segment_id, object command)
-    // {
-    //     await Task.Yield();
-    //     throw new NotImplementedException();
-        
-    //     // if (MarketSegment_id != command.Id) return TypedResults.BadRequest();
+    public async Task<Results<NoContent, BadRequest>> UpdateMarketSegment(ISender sender, int segment_id, UpdateMarketSegmentCommand command)
+    {
+        if (segment_id != command.Id) return TypedResults.BadRequest();
 
-    //     // await sender.Send(command);
+        await sender.Send(command);
 
-    //     // return TypedResults.NoContent();
-    // }
+        return TypedResults.NoContent();
+    }
 }
