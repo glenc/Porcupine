@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Porcupine.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace Porcupine.Application.FunctionalTests;
 
@@ -107,14 +108,29 @@ public partial class Testing
         _userId = null;
     }
 
-    public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)
+    public static async Task<TEntity?> FindAsync<TEntity>(object id)
+        where TEntity : class
+    {
+        return await FindAsync<TEntity>(id, []);
+    }
+
+    public static async Task<TEntity?> FindAsync<TEntity>(object id, Expression<Func<TEntity, object?>>[]? includes)
         where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
 
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        return await context.FindAsync<TEntity>(keyValues);
+        var entity = await context.FindAsync<TEntity>([id]);
+        if (entity != null && includes != null)
+        {
+            foreach (var include in includes)
+            {
+                await context.Entry(entity).Reference(include).LoadAsync();
+            }
+        }
+
+        return entity;
     }
 
     public static async Task<int> AddAsync<TEntity>(TEntity entity)
