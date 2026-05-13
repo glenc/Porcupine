@@ -154,6 +154,15 @@ public partial class Testing
         return await context.Set<TEntity>().CountAsync();
     }
 
+    public static async Task ExecuteBatchAsync(Func<ApplicationDbContext, Task> action)
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        await action(context);
+    }
+
     [OneTimeTearDown]
     public async Task RunAfterAnyTests()
     {

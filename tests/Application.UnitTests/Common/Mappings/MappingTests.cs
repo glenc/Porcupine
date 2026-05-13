@@ -29,7 +29,9 @@ public class MappingTests
     }
 
     [Test]
-    [TestCase(typeof(PorcupineExampleEntity), typeof(LookupDto))]
+    [TestCase(typeof(Industry), typeof(LookupDto))]
+    [TestCase(typeof(MarketSegment), typeof(LookupDto))]
+    [TestCase(typeof(LifecycleStage), typeof(LookupDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);

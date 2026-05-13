@@ -12,7 +12,9 @@ public record LookupDto
     {
         public Mapping()
         {
-            CreateMap<PorcupineExampleEntity, LookupDto>();
+            CreateMap<Industry, LookupDto>();
+            CreateMap<MarketSegment, LookupDto>();
+            CreateMap<LifecycleStage, LookupDto>();
         }
     }
 }
