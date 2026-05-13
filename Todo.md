@@ -17,3 +17,13 @@
         - use this to refine format and what needs to go in the db
     - [ ] big question is how to execute actions
     - [ ] this will need its own specialized test harness
+
+- prototype notes
+    - name, description
+    - event name (string)
+    - criteria based on data supplied by the event (string to start)
+    - actions (tbd)
+
+- [ ] Events
+    - [ ] query for all events in the system
+        - [ ] consider attribute decorators for friendly names/descriptions
