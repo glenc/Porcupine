@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Porcupine.Application.Organizations.Commands.CreateOrganization;
+using Porcupine.Application.Organizations.Commands.UpdateOrganization;
 using Porcupine.Application.Organizations.Queries.GetOrganization;
 using Porcupine.Application.Organizations.Queries.ListOrganizations;
 
@@ -15,8 +16,8 @@ public class Organizations : IEndpointGroup
         group
             .MapGet(ListOrganizations)
             .MapGet(GetOrganization, "{org_id}")
-            .MapPost(CreateOrganization);
-            //.MapPut(Update, "{org_id}");
+            .MapPost(CreateOrganization)
+            .MapPut(UpdateOrganization, "{org_id}");
         
         return group;
     }
@@ -39,15 +40,12 @@ public class Organizations : IEndpointGroup
         return TypedResults.Created($"/{nameof(Organizations)}/{result}", result);
     }
 
-    public async Task<Results<NoContent, BadRequest>> Update(ISender sender, int org_id, object command)
+    public async Task<Results<NoContent, BadRequest>> UpdateOrganization(ISender sender, int org_id, UpdateOrganizationCommand command)
     {
-        await Task.Yield();
-        throw new NotImplementedException();
-        
-        // if (org_id != command.Id) return TypedResults.BadRequest();
+        if (org_id != command.Id) return TypedResults.BadRequest();
 
-        // await sender.Send(command);
+        await sender.Send(command);
 
-        // return TypedResults.NoContent();
+        return TypedResults.NoContent();
     }
 }
