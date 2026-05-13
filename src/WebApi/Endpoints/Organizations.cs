@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Porcupine.Application.Organizations.Commands.CreateOrganization;
 using Porcupine.Application.Organizations.Queries.GetOrganization;
+using Porcupine.Application.Organizations.Queries.ListOrganizations;
 
 namespace Porcupine.WebApi.Endpoints;
 
@@ -12,7 +13,7 @@ public class Organizations : IEndpointGroup
             .RequireAuthorization();
 
         group
-            //.MapGet(List)
+            .MapGet(ListOrganizations)
             .MapGet(GetOrganization, "{org_id}")
             .MapPost(CreateOrganization);
             //.MapPut(Update, "{org_id}");
@@ -20,13 +21,10 @@ public class Organizations : IEndpointGroup
         return group;
     }
 
-    public async Task<Ok<object>> List(ISender sender)
+    public async Task<Ok<OrganizationListVm>> ListOrganizations(ISender sender)
     {
-        await Task.Yield();
-        throw new NotImplementedException();
-
-        // var result = null;
-        // return TypedResults.Ok(result);
+        var result = await sender.Send(new ListOrganizationsQuery());
+        return TypedResults.Ok(result);
     }
 
     public async Task<Ok<OrganizationDetailVm>> GetOrganization(ISender sender, int org_id)
