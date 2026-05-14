@@ -5,5 +5,5 @@ public interface IEventTypeService
     void AddEventTypesFromAssembly<T>();
     void AddEventTypesFromAppDomain();
     
-    IEnumerable<Type> EventTypes { get; }
+    IEnumerable<IEventType> EventTypes { get; }
 }

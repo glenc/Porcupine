@@ -23,7 +23,7 @@ public class ListEventTypesQueryHandler(IEventTypeService eventTypeService) : IR
     public async Task<EventTypeListVm> Handle(ListEventTypesQuery request, CancellationToken cancellationToken)
     {
         var eventTypes = _eventTypeService.EventTypes
-            .Select(x => new EventTypeDto(x.AssemblyQualifiedName ?? ""))
+            .Select(x => new EventTypeDto(x.TypeName, x.DisplayName, x.Description))
             .ToList();
         
         return new EventTypeListVm(eventTypes);

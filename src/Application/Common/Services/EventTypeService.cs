@@ -6,9 +6,9 @@ namespace Porcupine.Application.Common.Services;
 
 public class EventTypeService : IEventTypeService
 {
-    private readonly List<Type> _types = [];
+    private readonly List<IEventType> _types = [];
 
-    public IEnumerable<Type> EventTypes => _types;
+    public IEnumerable<IEventType> EventTypes => _types;
 
     public void AddEventTypesFromAssembly<T>()
     {
@@ -17,6 +17,7 @@ public class EventTypeService : IEventTypeService
         var types = typeof(T).Assembly
             .GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && baseEventType.IsAssignableFrom(t))
+            .Select(PopulateEventType)
             .ToList();
         
         _types.AddRange(types);
@@ -43,8 +44,21 @@ public class EventTypeService : IEventTypeService
                 t.IsClass &&
                 !t.IsAbstract &&
                 baseEventType.IsAssignableFrom(t))
+            .Select(PopulateEventType)
             .ToList();
         
         _types.AddRange(types);
+    }
+
+    private IEventType PopulateEventType(Type type)
+    {
+            var attr = type.GetCustomAttribute<EventTypeAttribute>();
+
+            return new EventType
+            (
+                type,
+                attr?.DisplayName ?? "", 
+                attr?.Description ?? ""
+            );
     }
 }
