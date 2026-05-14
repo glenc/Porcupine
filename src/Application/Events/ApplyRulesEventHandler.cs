@@ -1,29 +1,34 @@
 using MediatR;
+using Porcupine.Application.Common.Interfaces;
+using Porcupine.Application.Industries.Commands.CreateIndustry;
 using Porcupine.Domain.Entities;
+using Porcupine.Domain.Enums;
 
 namespace Porcupine.Application.Events;
 
-// public class ApplyRulesEventHandler<TNotification> : INotificationHandler<TNotification>
-//     where TNotification : INotification
-// {
-//     public Task Handle(TNotification notification, CancellationToken cancellationToken)
-//     {
-//         var eventType = notification.GetType().Name;
+public class ApplyRulesEventHandler<TNotification>(IEventTypeService eventTypeService, IApplicationDbContext context, ISender sender) : INotificationHandler<TNotification>
+    where TNotification : INotification
+{
+    private readonly IEventTypeService _eventTypeService = eventTypeService;
+    private readonly IApplicationDbContext _context = context;
+    private readonly ISender _sender = sender;
 
-//         var rules = _rules.Where(x => x.EventName == eventType).ToList();
+    public async Task Handle(TNotification notification, CancellationToken cancellationToken)
+    {
+        var eventType = notification.GetType();
 
-//         foreach (var rule in rules)
-//         {
+        if (_eventTypeService.IsTypeRegistered(eventType) == true)
+        {
+            // load matching rules from db
+            var rules = await _context.Rules
+                .Where(x => x.TriggerType == TriggerType.DomainEvent && x.TriggerName == eventType.AssemblyQualifiedName)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
             
-//         }
-
-//         return Task.CompletedTask;
-//     }
-
-//     private readonly List<Rule> _rules = [
-//         new Rule("Run Stage 1", "OrganizationCreatedEvent", "LifecycleStage.Id = 1"),
-//         new Rule("Run Stage 2", "OrganizationCreatedEvent", "LifecycleStage.Id = 2"),
-//         new Rule("Run Stage 3", "OrganizationCreatedEvent", "LifecycleStage.Id = 3"),
-//         new Rule("Run always", "OrganizationCreatedEvent")
-//     ];
-// }
+            // foreach (var rule in rules)
+            // {
+            //     await _sender.Send(new CreateIndustryCommand { Name = "New from trigger" }, cancellationToken);
+            // }
+        }
+    }
+}

@@ -28,6 +28,16 @@ public class EventTypeServiceTests
         evt2.DisplayName.Should().Be("Generic");
         evt2.Description.Should().Be("Hard to pin down");
     }
+
+    [Test]
+    public void IsTypeRegisteredShouldCheckForEventTypePresence()
+    {
+        var svc = new EventTypeService();
+        svc.AddEventTypesFromAssembly<EventTypeServiceTests>();
+
+        svc.IsTypeRegistered(typeof(TestEventTypeOne)).Should().BeTrue();
+        svc.IsTypeRegistered(typeof(object)).Should().BeFalse();
+    }
 }
 
 [EventType("Test Event One")]

@@ -61,4 +61,9 @@ public class EventTypeService : IEventTypeService
                 attr?.Description ?? ""
             );
     }
+
+    public bool IsTypeRegistered(Type eventType)
+    {
+        return _types.Where(x => x.Type == eventType).Any();
+    }
 }
