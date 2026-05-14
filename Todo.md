@@ -30,3 +30,7 @@
 - [ ] Events
     - [ ] query for all events in the system
         - [ ] consider attribute decorators for friendly names/descriptions
+
+## Scratch Pad ##
+Porcupine.Domain.Events.OrganizationCreatedEvent, Porcupine.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+Porcupine.Domain.Events.OrganizationUpdatedEvent, Porcupine.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null

@@ -1,6 +1,8 @@
 using Porcupine.Application.Common.Exceptions;
 using Porcupine.Application.Rules.Commands.CreateRule;
 using Porcupine.Domain.Entities;
+using Porcupine.Domain.Enums;
+using Porcupine.Domain.Events;
 
 namespace Porcupine.Application.FunctionalTests.Rules.Commands;
 
@@ -8,12 +10,20 @@ using static Testing;
 
 public class CreateRuleTests : BaseTestFixture
 {
+    private readonly string _eventName = typeof(OrganizationCreatedEvent).AssemblyQualifiedName 
+        ?? throw new Exception("can't resolve type");
+
     [Test]
     public async Task ShouldRequireMinimumFields()
     {
         var userId = await RunAsAdministratorAsync();
 
-        var command = new CreateRuleCommand { Name = "", EventType = typeof(object) };
+        var command = new CreateRuleCommand { Name = "", TriggerName = "foo", TriggerType = TriggerType.DomainEvent };
+
+        await FluentActions.Invoking(() => SendAsync(command))
+            .Should().ThrowAsync<ValidationException>();
+        
+        command = new CreateRuleCommand { Name = "foo", TriggerName = "", TriggerType = TriggerType.DomainEvent };
 
         await FluentActions.Invoking(() => SendAsync(command))
             .Should().ThrowAsync<ValidationException>();
@@ -22,7 +32,7 @@ public class CreateRuleTests : BaseTestFixture
     [Test]
     public async Task ShouldRequireAuthentication() 
     {
-        var command = new CreateRuleCommand { Name = "foo", EventType = typeof(object) };
+        var command = new CreateRuleCommand { Name = "Test", TriggerName = _eventName, TriggerType = TriggerType.DomainEvent };
 
         await FluentActions.Invoking(() => SendAsync(command))
             .Should().ThrowAsync<UnauthorizedAccessException>();
@@ -33,43 +43,56 @@ public class CreateRuleTests : BaseTestFixture
     {
         var userId = await RunAsDefaultUserAsync();
 
-        var command = new CreateRuleCommand { Name = "foo", EventType = typeof(object) };
+        var command = new CreateRuleCommand { Name = "Test", TriggerName = _eventName, TriggerType = TriggerType.DomainEvent };
 
         await FluentActions.Invoking(() => SendAsync(command))
             .Should().ThrowAsync<ForbiddenAccessException>();
     }
 
     [Test]
-    public async Task ShouldCreateANewRules()
+    public async Task TriggerNameShouldResolveToValidType() 
     {
         var userId = await RunAsAdministratorAsync();
 
-        var command = new CreateRuleCommand { Name = "foo", EventType = typeof(object) };
+        var command = new CreateRuleCommand { Name = "Test", TriggerName = "NotAType", TriggerType = TriggerType.DomainEvent };
+
+        await FluentActions.Invoking(() => SendAsync(command))
+            .Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateANewRule()
+    {
+        var userId = await RunAsAdministratorAsync();
+
+        var command = new CreateRuleCommand { Name = "Test", TriggerName = _eventName, TriggerType = TriggerType.DomainEvent };
         var result = await SendAsync(command);
         
         result.Should().BePositive();
 
         var rule = await FindAsync<Rule>(result);
         rule.Should().NotBeNull();
-        rule.Name.Should().Be("foo");
-        rule.EventName.Should().Be("System.Object");
+        rule.Name.Should().Be("Test");
+        rule.TriggerName.Should().Be(_eventName);
+        rule.TriggerType.Should().Be(TriggerType.DomainEvent);
         rule.Criteria.Should().BeNull();
     }
 
     [Test]
-    public async Task ShouldCreateANewRulesWithCriteria()
+    public async Task ShouldCreateANewRuleWithCriteria()
     {
         var userId = await RunAsAdministratorAsync();
 
-        var command = new CreateRuleCommand { Name = "foo", EventType = typeof(object), Criteria = "Id == 1" };
+        var command = new CreateRuleCommand { Name = "Test", TriggerName = _eventName, TriggerType = TriggerType.DomainEvent, Criteria = "Id == 1" };
         var result = await SendAsync(command);
         
         result.Should().BePositive();
 
         var rule = await FindAsync<Rule>(result);
         rule.Should().NotBeNull();
-        rule.Name.Should().Be("foo");
-        rule.EventName.Should().Be("System.Object");
+        rule.Name.Should().Be("Test");
+        rule.TriggerName.Should().Be(_eventName);
+        rule.TriggerType.Should().Be(TriggerType.DomainEvent);
         rule.Criteria.Should().Be("Id == 1");
     }
 

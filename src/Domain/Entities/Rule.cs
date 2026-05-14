@@ -1,41 +1,58 @@
+using Porcupine.Domain.Enums;
+
 namespace Porcupine.Domain.Entities;
 
 public class Rule : BaseAuditableEntity
 {
-    public string Name { get; private set; } = "";
-    public string EventName { get; private set; } = "";
+    public TriggerType TriggerType { get; private set; }
+    public string TriggerName { get; private set; }
+    public string Name { get; private set; }
     public string? Criteria { get; private set; }
 
-    private Rule(string name, string eventName, string? criteria)
+    private Rule(string name, TriggerType triggerType, string triggerName, string? criteria)
     {
         Guard.Against.NullOrWhiteSpace(name);
-        Guard.Against.NullOrWhiteSpace(eventName);
+        Guard.Against.NullOrWhiteSpace(triggerName);
+        Guard.Against.Null(triggerType);
 
         Name = name;
-        EventName = eventName;
+        TriggerType = triggerType;
+        TriggerName = triggerName;
         Criteria = criteria;
     }
 
-    public static Rule RuleFor<TEventType>(string name)
+    public static Rule DomainEventRuleFor<TEvent>(string name)
     {
-        return Rule.RuleFor<TEventType>(name, null);
+        return DomainEventRuleFor<TEvent>(name, null);
+    }
+    public static Rule DomainEventRuleFor<TEvent>(string name, string? criteria)
+    {
+        return DomainEventRuleFor(typeof(TEvent), name, criteria);
     }
 
-    public static Rule RuleFor<TEventType>(string name, string? criterial)
+    public static Rule DomainEventRuleFor(Type eventType, string name)
     {
-        return RuleFor(typeof(TEventType), name, criterial);
+        return DomainEventRuleFor(eventType, name, null);
     }
 
-    public static Rule RuleFor(Type type, string name)
+    public static Rule DomainEventRuleFor(Type eventType, string name, string? criteria)
     {
-        return RuleFor(type, name, null);
-    }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.Null(eventType);
+        Guard.Against.Null(eventType.AssemblyQualifiedName);
 
-    public static Rule RuleFor(Type type, string name, string? criteria)
-    {
-        return new Rule(name, type.GetFriendlyName(), criteria);
+        return new Rule(
+            name,
+            TriggerType.DomainEvent,
+            eventType.AssemblyQualifiedName,
+            criteria
+        );
     }
 
     // for ef rehydration
-    private Rule() {}
+    private Rule() 
+    {
+        Name = null!;
+        TriggerName = null!;
+    }
 }

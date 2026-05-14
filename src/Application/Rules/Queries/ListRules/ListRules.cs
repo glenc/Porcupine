@@ -25,7 +25,7 @@ public class ListRulesQueryHandler(IApplicationDbContext context, IMapper mapper
     {
         var rules = await _context.Rules
             .AsNoTracking()
-            .OrderBy(x => x.EventName)
+            .OrderBy(x => x.Name)
             .ProjectToListAsync<RuleSummaryDto>(_mapper.ConfigurationProvider);
 
         return new RuleListVm(rules);

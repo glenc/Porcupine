@@ -2,6 +2,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Porcupine.Domain.Common;
 using Porcupine.Domain.Entities;
+using Porcupine.Domain.Enums;
 using Porcupine.Domain.Events;
 
 namespace Porcupine.Domain.UnitTests.Entities;
@@ -9,44 +10,20 @@ namespace Porcupine.Domain.UnitTests.Entities;
 public class RuleTests
 {
     [Test]
-    public void CanCreateRule()
+    public void CanCreateDomainEventRule()
     {
-        var entity = Rule.RuleFor<object>("name");
-        entity.Should().NotBeNull();
+        var rule = Rule.DomainEventRuleFor<OrganizationCreatedEvent>("test");
+        rule.Should().NotBeNull();
+        rule.TriggerType.Should().Be(TriggerType.DomainEvent);
+        rule.TriggerName.Should().Be(typeof(OrganizationCreatedEvent).AssemblyQualifiedName);
+        rule.Name.Should().Be("test");
+        rule.Criteria.Should().BeNull();
     }
 
     [Test]
-    public void CreateRuleSetsProperties()
+    public void CreateDomainEventRuleGuardsAgainstEmptyName()
     {
-        var entity = Rule.RuleFor<object>("One", "x == y");
-        entity.Should().NotBeNull();
-        entity.Name.Should().Be("One");
-        entity.EventName.Should().Be("System.Object");
-        entity.Criteria.Should().Be("x == y");
-    }
-
-    [Test]
-    public void EmptyCriteriaSetsNullCriteria()
-    {
-        var entity = Rule.RuleFor<object>("One");
-        entity.Should().NotBeNull();
-        entity.Name.Should().Be("One");
-        entity.EventName.Should().Be("System.Object");
-        entity.Criteria.Should().BeNull();
-    }
-
-    [Test]
-    public void RuleForGenericTypeWorks()
-    {
-        var entity = Rule.RuleFor<PorcupineEvent<object>>("One");
-        entity.Should().NotBeNull();
-        entity.EventName.Should().Be("Porcupine.Domain.Events.PorcupineEvent<System.Object>");
-    }
-
-    [Test]
-    public void EmptyNameThrowsException()
-    {
-        var act = () => Rule.RuleFor<object>("", "x == y");
+        var act = () => Rule.DomainEventRuleFor<OrganizationCreatedEvent>("");
         act.Should().Throw<ArgumentException>();
     }
 }

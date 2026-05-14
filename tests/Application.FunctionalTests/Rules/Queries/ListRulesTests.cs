@@ -32,14 +32,14 @@ public class ListRulesTests : BaseTestFixture
         result.Items.Where(x => x.Name == "One").Should().HaveCount(1);
         result.Items.Where(x => x.Name == "Two").Should().HaveCount(1);
 
-        result.Items.Where(x => x.EventName == typeof(OrganizationCreatedEvent).GetFriendlyName()).Should().HaveCount(1);
-        result.Items.Where(x => x.EventName == typeof(OrganizationUpdatedEvent).GetFriendlyName()).Should().HaveCount(1);
+        result.Items.Where(x => x.TriggerName == typeof(OrganizationCreatedEvent).AssemblyQualifiedName).Should().HaveCount(1);
+        result.Items.Where(x => x.TriggerName == typeof(OrganizationUpdatedEvent).AssemblyQualifiedName).Should().HaveCount(1);
     }
 
     protected override async Task SeedData()
     {
-        await AddAsync<Rule>(Rule.RuleFor<OrganizationCreatedEvent>("One"));
-        await AddAsync<Rule>(Rule.RuleFor<OrganizationUpdatedEvent>("Two"));
+        await AddAsync<Rule>(Rule.DomainEventRuleFor<OrganizationCreatedEvent>("One"));
+        await AddAsync<Rule>(Rule.DomainEventRuleFor<OrganizationUpdatedEvent>("Two"));
 
         await base.SeedData();
     }

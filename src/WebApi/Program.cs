@@ -19,7 +19,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference("scalar", opts => opts
-        .WithTitle("Trex.WebApi")
+        .WithTitle("Porcupine.WebApi")
         .ShowOperationId()
         .AddPreferredSecuritySchemes(["Bearer"])
         .EnablePersistentAuthentication()

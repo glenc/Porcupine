@@ -1,8 +1,9 @@
 using Porcupine.Domain.Entities;
+using Porcupine.Domain.Enums;
 
 namespace Porcupine.Application.Rules.Queries.ListRules;
 
-public record RuleSummaryDto(int Id, string Name, string EventName, string? Criteria) 
+public record RuleSummaryDto(int Id, string Name, TriggerType TriggerType, string TriggerName, string? Criteria) 
 {
     private class Mapping : Profile
     {

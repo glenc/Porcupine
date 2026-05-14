@@ -2,14 +2,16 @@ using Porcupine.Application.Common.Interfaces;
 using Porcupine.Application.Common.Security;
 using Porcupine.Domain.Constants;
 using Porcupine.Domain.Entities;
+using Porcupine.Domain.Enums;
 
 namespace Porcupine.Application.Rules.Commands.CreateRule;
 
 [Authorize(Roles = Roles.Administrator)]
-public record CreateRuleCommand : IRequest<int>
+public record CreateRuleCommand() : IRequest<int>
 {
     public required string Name { get; init; }
-    public required Type EventType { get; init; }
+    public required TriggerType TriggerType { get; init; }
+    public required string TriggerName { get; init; }
     public string? Criteria { get; init; }
 }
 
@@ -18,7 +20,7 @@ public class CreateRuleCommandValidator : AbstractValidator<CreateRuleCommand>
     public CreateRuleCommandValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
-        RuleFor(x => x.EventType).NotNull();
+        RuleFor(x => x.TriggerName).NotEmpty();
     }
 }
 
@@ -29,12 +31,23 @@ public class CreateRuleCommandHandler(IApplicationDbContext context, IUser user)
 
     public async Task<int> Handle(CreateRuleCommand request, CancellationToken cancellationToken)
     {
-        var rule = Rule.RuleFor(request.EventType, request.Name, request.Criteria);
+        if (request.TriggerType == TriggerType.DomainEvent)
+        {
+            // try to resolve type
+            var eventType = Type.GetType(request.TriggerName) ??
+                throw new ArgumentException("TriggerName provided could not be resolved to a valid Type");
+            
+            var rule = Rule.DomainEventRuleFor(eventType, request.Name, request.Criteria);
 
-        _context.Rules.Add(rule);
+            _context.Rules.Add(rule);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return rule.Id;
+            return rule.Id;
+        }
+        else
+        {
+            throw new ArgumentException($"Rules with triggers of type {request.TriggerType} are not supported.");
+        }
     }
 }
