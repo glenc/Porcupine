@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Porcupine.Application.Rules.Commands.CreateRule;
+using Porcupine.Application.Rules.Commands.UpdateRule;
+using Porcupine.Application.Rules.Queries.GetRule;
 using Porcupine.Application.Rules.Queries.ListRules;
 
 namespace Porcupine.WebApi.Endpoints;
@@ -13,9 +15,9 @@ public class Rules : IEndpointGroup
 
         group
             .MapGet(ListRules)
-            //.MapGet(Get, "{rule_id}")
-            .MapPost(CreateRule);
-            //.MapPut(Update, "{rule_id}");
+            .MapGet(GetRule, "{rule_id}")
+            .MapPost(CreateRule)
+            .MapPut(UpdateRule, "{rule_id}");
         
         return group;
     }
@@ -26,13 +28,10 @@ public class Rules : IEndpointGroup
         return TypedResults.Ok(result);
     }
 
-    public async Task<Ok<object>> Get(ISender sender, int rule_id)
+    public async Task<Ok<RuleDetailVm>> GetRule(ISender sender, int rule_id)
     {
-        await Task.Yield();
-        throw new NotImplementedException();
-
-        // var result = null;
-        // return TypedResults.Ok(result);
+        var result = await sender.Send(new GetRuleQuery { Id = rule_id });
+        return TypedResults.Ok(result);
     }
 
     public async Task<Created<int>> CreateRule(ISender sender, CreateRuleCommand command)
@@ -41,15 +40,12 @@ public class Rules : IEndpointGroup
         return TypedResults.Created($"/{nameof(Rules)}/{result}", result);
     }
 
-    public async Task<Results<NoContent, BadRequest>> Update(ISender sender, int rule_id, object command)
+    public async Task<Results<NoContent, BadRequest>> UpdateRule(ISender sender, int rule_id, UpdateRuleCommand command)
     {
-        await Task.Yield();
-        throw new NotImplementedException();
-        
-        // if (rule_id != command.Id) return TypedResults.BadRequest();
+        if (rule_id != command.Id) return TypedResults.BadRequest();
 
-        // await sender.Send(command);
+        await sender.Send(command);
 
-        // return TypedResults.NoContent();
+        return TypedResults.NoContent();
     }
 }

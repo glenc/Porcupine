@@ -1,8 +1,9 @@
 using Porcupine.Domain.Enums;
+using Porcupine.Domain.Events;
 
 namespace Porcupine.Domain.Entities;
 
-public class Rule : BaseAuditableEntity
+public class Rule : BaseChangeTrackingEntity
 {
     public TriggerType TriggerType { get; private set; }
     public string TriggerName { get; private set; }
@@ -19,6 +20,30 @@ public class Rule : BaseAuditableEntity
         TriggerType = triggerType;
         TriggerName = triggerName;
         Criteria = criteria;
+
+        AddDomainEvent(new RuleCreatedEvent(this));
+    }
+
+    public void Update(string name)
+    {
+        Guard.Against.NullOrWhiteSpace(name);
+        
+        ApplyChange(() => Name, x => Name = x, name);
+
+        if (HasChanges())
+        {
+            AddDomainEvent(new RuleUpdatedEvent(this, GetAndClearChanges()));
+        }
+    }
+
+    public void ChangeCriteria(string? criteria)
+    {
+        ApplyChange(() => Criteria, x => Criteria = x, criteria);
+
+        if (HasChanges())
+        {
+            AddDomainEvent(new RuleUpdatedEvent(this, GetAndClearChanges()));
+        }
     }
 
     public static Rule DomainEventRuleFor<TEvent>(string name)
