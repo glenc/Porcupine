@@ -18,6 +18,8 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<CustomExceptionHandler>();
 
+        services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new TypeJsonConverter()));
+
         return services;
     }
 }
