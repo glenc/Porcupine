@@ -8,6 +8,7 @@ public interface IApplicationDbContext
     public DbSet<MarketSegment> MarketSegments { get; }
     public DbSet<LifecycleStage> LifecycleStages { get; }
     public DbSet<Organization> Organizations { get; }
+    public DbSet<Rule> Rules { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

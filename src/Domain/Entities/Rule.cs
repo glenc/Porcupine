@@ -23,7 +23,17 @@ public class Rule : BaseAuditableEntity
 
     public static Rule RuleFor<TEventType>(string name, string? criterial)
     {
-        return new Rule(name, typeof(TEventType).GetFriendlyName(), criterial);
+        return RuleFor(typeof(TEventType), name, criterial);
+    }
+
+    public static Rule RuleFor(Type type, string name)
+    {
+        return RuleFor(type, name, null);
+    }
+
+    public static Rule RuleFor(Type type, string name, string? criteria)
+    {
+        return new Rule(name, type.GetFriendlyName(), criteria);
     }
 
     // for ef rehydration

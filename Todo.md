@@ -11,6 +11,9 @@
 - [ ] FindAsync overload may need one for collections
 - [ ] Clean up all the AddAsync calls that don't need type delcared
 
+## Cleanup ##
+- [ ] use required for record properties
+
 ## Rules Engine ##
 - [ ] Prototype
     - [ ] build an event receiver w/ a series of hard coded rules

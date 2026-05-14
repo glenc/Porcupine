@@ -15,6 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<MarketSegment> MarketSegments => Set<MarketSegment>();
     public DbSet<LifecycleStage> LifecycleStages => Set<LifecycleStage>();
     public DbSet<Organization> Organizations => Set<Organization>();
+    public DbSet<Rule> Rules => Set<Rule>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
