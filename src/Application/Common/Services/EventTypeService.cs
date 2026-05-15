@@ -12,7 +12,7 @@ public class EventTypeService : IEventTypeService
 
     public void AddEventTypesFromAssembly<T>()
     {
-        var baseEventType = typeof(BaseEvent);
+        var baseEventType = typeof(IEventTypeNotification);
 
         var types = typeof(T).Assembly
             .GetTypes()
@@ -25,7 +25,7 @@ public class EventTypeService : IEventTypeService
 
     public void AddEventTypesFromAppDomain()
     {
-        var baseEventType = typeof(BaseEvent);
+        var baseEventType = typeof(IEventTypeNotification);
 
         var types = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(a =>

@@ -41,12 +41,12 @@ public class EventTypeServiceTests
 }
 
 [EventType("Test Event One")]
-public record TestEventTypeOne : BaseEvent {}
+public record TestEventTypeOne : BaseEvent, IEventTypeNotification {}
 
 [EventType("Test Event Two")]
-public record TestEventTypeTwo : BaseEvent {}
+public record TestEventTypeTwo : BaseEvent, IEventTypeNotification {}
 
-public record TestEventTypeOne_One : TestEventTypeOne {}
+public record TestEventTypeOne_One : TestEventTypeOne, IEventTypeNotification {}
 
 [EventType("Generic", "Hard to pin down")]
-public record GenericEventType<T> : BaseEvent {}
+public record GenericEventType<T> : BaseEvent, IEventTypeNotification {}
