@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Porcupine.Application.Common.Services;
 
 namespace Porcupine.Application.FunctionalTests;
 
@@ -38,12 +37,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                     options.UseSqlite(_connection);
                 });
-            
-            var eventTypeService = new EventTypeService();
-            eventTypeService.AddEventTypesFromAssembly<CustomWebApplicationFactory>();
-            services
-                .RemoveAll<IEventTypeService>()
-                .AddSingleton<IEventTypeService>(eventTypeService);
         });
     }
 }
