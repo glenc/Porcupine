@@ -1,5 +1,5 @@
 using Porcupine.Domain.Entities;
-using Porcupine.Domain.Enums;
+using Porcupine.Domain.Triggers;
 
 namespace Porcupine.Application.Rules.Queries.ListRules;
 

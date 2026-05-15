@@ -2,7 +2,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Porcupine.Domain.Common;
 using Porcupine.Domain.Entities;
-using Porcupine.Domain.Enums;
+using Porcupine.Domain.Triggers;
 using Porcupine.Domain.Events;
 
 namespace Porcupine.Domain.UnitTests.Entities;

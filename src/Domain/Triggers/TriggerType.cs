@@ -1,4 +1,4 @@
-namespace Porcupine.Domain.Enums;
+namespace Porcupine.Domain.Triggers;
 
 public enum TriggerType : int
 {

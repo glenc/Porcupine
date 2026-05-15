@@ -1,7 +1,7 @@
 using Porcupine.Application.Common.Exceptions;
 using Porcupine.Application.Rules.Commands.CreateRule;
 using Porcupine.Domain.Entities;
-using Porcupine.Domain.Enums;
+using Porcupine.Domain.Triggers;
 using Porcupine.Domain.Events;
 
 namespace Porcupine.Application.FunctionalTests.Rules.Commands;

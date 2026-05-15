@@ -1,5 +1,5 @@
-using Porcupine.Domain.Enums;
 using Porcupine.Domain.Events;
+using Porcupine.Domain.Triggers;
 
 namespace Porcupine.Domain.Entities;
 

@@ -2,7 +2,7 @@ using Porcupine.Application.Common.Interfaces;
 using Porcupine.Application.Common.Security;
 using Porcupine.Domain.Constants;
 using Porcupine.Domain.Entities;
-using Porcupine.Domain.Enums;
+using Porcupine.Domain.Triggers;
 
 namespace Porcupine.Application.Rules.Commands.CreateRule;
 
