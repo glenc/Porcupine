@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Porcupine.Domain.Triggers;
+using MediatR;
 
 namespace Porcupine.Application.FunctionalTests;
 
@@ -37,6 +39,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                     options.UseSqlite(_connection);
                 });
+            
+            services.RemoveAll(typeof(INotificationHandler<>));
         });
     }
 }
