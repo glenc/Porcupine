@@ -1,5 +1,6 @@
 using Porcupine.Domain.Events;
 using Porcupine.Domain.Triggers;
+using Porcupine.Domain.ValueObjects;
 
 namespace Porcupine.Domain.Entities;
 
@@ -9,6 +10,9 @@ public class Rule : BaseChangeTrackingEntity
     public string TriggerName { get; private set; }
     public string Name { get; private set; }
     public string? Criteria { get; private set; }
+    public IReadOnlyCollection<RuleAction> Actions => _actions.AsReadOnly<RuleAction>();
+
+    private readonly List<RuleAction> _actions = [];
 
     private Rule(string name, TriggerType triggerType, string triggerName, string? criteria)
     {
@@ -43,6 +47,38 @@ public class Rule : BaseChangeTrackingEntity
         if (HasChanges())
         {
             AddDomainEvent(new RuleUpdatedEvent(this, GetAndClearChanges()));
+        }
+    }
+
+    public void AddAction(RuleAction action)
+    {
+        if (!_actions.Contains(action))
+        {
+            _actions.Add(action);
+
+            AddDomainEvent(new ActionAddedToRuleEvent(this, action));
+        }
+    }
+
+    public void RemoveAction(RuleAction action)
+    {
+        if (_actions.Contains(action))
+        {
+            _actions.Remove(action);
+
+            AddDomainEvent(new ActionRemovedFromRuleEvent(this, action));
+        }
+    }
+
+    public void RemoveAllActions()
+    {
+        if (_actions.Count > 0)
+        {
+            var actionsRemoved = new List<RuleAction>(_actions);
+
+            _actions.Clear();
+
+            AddDomainEvent(new AllActionsRemovedFromRuleEvent(this, actionsRemoved));
         }
     }
 

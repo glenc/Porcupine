@@ -75,3 +75,10 @@ architecture
 questions
 - what if an action failes? should the rest execute?
     - probably yes
+
+
+actions
+    {
+        CommandType: Type,
+        CommandTemplate: { SegmentId: 1, OrgId: "{{Id}}" }
+    }
