@@ -163,6 +163,11 @@ public partial class Testing
         await action(context);
     }
 
+    public static IServiceScope CreateScope()
+    {
+        return _scopeFactory.CreateScope();
+    }
+
     [OneTimeTearDown]
     public async Task RunAfterAnyTests()
     {
