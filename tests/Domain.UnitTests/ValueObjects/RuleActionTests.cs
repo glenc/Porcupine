@@ -10,7 +10,7 @@ public class RuleActionTests
     public void RuleActionForReturnsValidAction()
     {
         var action = RuleAction.For<int>("{ Foo: 1 }");
-        action.CommandType.Should().Be<int>();
+        action.GetCommandType().Should().Be<int>();
         action.CommandTemplate.Should().Be("{ Foo: 1 }");
     }
 
