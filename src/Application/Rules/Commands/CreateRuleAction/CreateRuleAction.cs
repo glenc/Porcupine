@@ -10,7 +10,7 @@ namespace Porcupine.Application.Rules.Commands.CreateRuleAction;
 public record CreateRuleActionCommand : IRequest<int>
 {
     public int RuleId { get; init; }
-    public string CommandType { get; init; } = null!;
+    public string CommandTypeName { get; init; } = null!;
     public string CommandTemplate { get; init; } = null!;
 }
 
@@ -21,7 +21,7 @@ public class CreateRuleActionCommandValidator : AbstractValidator<CreateRuleActi
         RuleFor(x => x.RuleId)
             .NotEmpty();
 
-        RuleFor(x => x.CommandType)
+        RuleFor(x => x.CommandTypeName)
             .NotEmpty();
         
         RuleFor(x => x.CommandTemplate)
@@ -39,7 +39,7 @@ public class CreateRuleActionCommandHandler(IApplicationDbContext context, IUser
         var rule = await _context.Rules.FindAsync([request.RuleId], cancellationToken)
             ?? throw new NotFoundException("Id", nameof(Rule));
         
-        var type = Type.GetType(request.CommandType) ??
+        var type = Type.GetType(request.CommandTypeName) ??
                 throw new ArgumentException("CommandType provided could not be resolved to a valid Type");
         
         if (IsRequest(type) == false)

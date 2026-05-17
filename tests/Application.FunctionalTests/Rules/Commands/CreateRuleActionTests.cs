@@ -29,7 +29,7 @@ public class CreateRuleActionTests : BaseTestFixture
         command = new CreateRuleActionCommand
         {
             RuleId = 1,
-            CommandType = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
+            CommandTypeName = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
             CommandTemplate = ""
         };
 
@@ -43,7 +43,7 @@ public class CreateRuleActionTests : BaseTestFixture
         var command = new CreateRuleActionCommand
         {
             RuleId = 1,
-            CommandType = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
+            CommandTypeName = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
             CommandTemplate = "{}"
         };
 
@@ -59,7 +59,7 @@ public class CreateRuleActionTests : BaseTestFixture
         var command = new CreateRuleActionCommand
         {
             RuleId = 1,
-            CommandType = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
+            CommandTypeName = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
             CommandTemplate = "{}"
         };
 
@@ -75,7 +75,7 @@ public class CreateRuleActionTests : BaseTestFixture
         var command = new CreateRuleActionCommand
         {
             RuleId = _ruleId,
-            CommandType = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
+            CommandTypeName = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
             CommandTemplate = "{}"
         };
 
@@ -96,7 +96,7 @@ public class CreateRuleActionTests : BaseTestFixture
         var command = new CreateRuleActionCommand
         {
             RuleId = int.MaxValue,
-            CommandType = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
+            CommandTypeName = typeof(CreateOrganizationCommand).AssemblyQualifiedName ?? "",
             CommandTemplate = "{}"
         };
 
@@ -112,7 +112,7 @@ public class CreateRuleActionTests : BaseTestFixture
         var command = new CreateRuleActionCommand
         {
             RuleId = 1,
-            CommandType = "some.crap",
+            CommandTypeName = "some.crap",
             CommandTemplate = "{}"
         };
 
@@ -128,7 +128,7 @@ public class CreateRuleActionTests : BaseTestFixture
         var command = new CreateRuleActionCommand
         {
             RuleId = 1,
-            CommandType = typeof(Rule).AssemblyQualifiedName ?? "",
+            CommandTypeName = typeof(Rule).AssemblyQualifiedName ?? "",
             CommandTemplate = "{}"
         };
 

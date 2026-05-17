@@ -3,6 +3,9 @@ using Porcupine.Application.Rules.Queries.GetRule;
 using Porcupine.Domain.Entities;
 using Porcupine.Domain.Triggers;
 using Porcupine.Domain.Events;
+using Porcupine.Domain.ValueObjects;
+using Porcupine.Application.Organizations.Commands.CreateOrganization;
+using Porcupine.Application.Industries.Commands.CreateIndustry;
 
 namespace Porcupine.Application.FunctionalTests.Rules.Queries;
 
@@ -43,6 +46,9 @@ public class GetRuleTests : BaseTestFixture
         result.Criteria.Should().Be("Id == 1");
         result.TriggerType.Should().Be(TriggerType.DomainEvent);
         result.TriggerName.Should().Be(typeof(OrganizationCreatedEvent).AssemblyQualifiedName);
+
+        result.Actions.Should().NotBeNull();
+        result.Actions.Should().HaveCount(2);
     }
 
     [Test]
@@ -60,6 +66,8 @@ public class GetRuleTests : BaseTestFixture
     protected override async Task SeedData()
     {
         var rule = Rule.DomainEventRuleFor<OrganizationCreatedEvent>("One", "Id == 1");
+        rule.AddAction(RuleAction.For<CreateOrganizationCommand>("{}"));
+        rule.AddAction(RuleAction.For<CreateIndustryCommand>("{}"));
         await AddAsync<Rule>(rule);
         _id = rule.Id;
 
