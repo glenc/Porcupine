@@ -4,7 +4,7 @@ namespace Porcupine.Application.Common.Interfaces;
 
 public interface ITriggerService
 {
-    IReadOnlyCollection<Type> Triggers { get; }
+    IReadOnlyCollection<TriggerDescriptor> Triggers { get; }
     void AddTriggersFromAssembly<T>();
     void AddTriggersFromAppDomain();
     void AddTrigger<T>() where T : ITrigger;

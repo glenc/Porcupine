@@ -4,9 +4,9 @@ using Porcupine.Domain.Triggers;
 
 namespace Porcupine.Application.Common.NotificationHandlers;
 
-public class IndustryEventTriggerHandler<TNotification>(IApplicationDbContext context, ISender sender) 
-    : EventTriggerHandler<Industry>(context, sender)
-    , INotificationHandler<TNotification> where TNotification : IDomainEventTrigger<Industry>
+public class MarketSegmentEventTriggerHandler<TNotification>(IApplicationDbContext context, ISender sender) 
+    : EventTriggerHandler<MarketSegment>(context, sender)
+    , INotificationHandler<TNotification> where TNotification : IDomainEventTrigger<MarketSegment>
 {
     public async Task Handle(TNotification notification, CancellationToken cancellationToken)
     {

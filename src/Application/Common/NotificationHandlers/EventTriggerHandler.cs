@@ -10,10 +10,9 @@ using System.Linq.Dynamic.Core;
 namespace Porcupine.Application.Common.NotificationHandlers;
 
 //works for industry
-public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context, ITriggerService triggerService, ISender sender) where TEntity : BaseEntity
+public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context, ISender sender) where TEntity : BaseEntity
 {
     private readonly IApplicationDbContext _context = context;
-    private readonly ITriggerService _triggerService = triggerService;
 
     protected async Task HandleTrigger(IDomainEventTrigger<TEntity> trigger)
     {
@@ -30,7 +29,8 @@ public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context
             // check criteria
             if (MatchesFilter(trigger.Entity, rule.Criteria))
             {
-                await sender.Send(new CreateIndustryCommand { Name = "foo" }, CancellationToken.None);
+                Console.WriteLine($"TRIGGER {trigger.GetType().Name} for {trigger.Entity.GetType()}.{trigger.Entity.Id}");
+                await sender.Send(new FakeAction(), CancellationToken.None);
             }
         }
     }
@@ -51,3 +51,5 @@ public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context
         return (bool)lambda.Compile().DynamicInvoke(obj)!;
     }
 }
+
+public record FakeAction : IRequest { }

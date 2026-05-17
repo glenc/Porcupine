@@ -6,14 +6,14 @@ namespace Porcupine.Application.Common.Services;
 
 public class TriggerService : ITriggerService
 {
-    private readonly List<Type> _triggers = [];
+    private readonly List<TriggerDescriptor> _triggers = [];
 
-    public IReadOnlyCollection<Type> Triggers => _triggers.AsReadOnly<Type>();
+    public IReadOnlyCollection<TriggerDescriptor> Triggers => _triggers.AsReadOnly<TriggerDescriptor>();
 
     public void AddTrigger<T>() where T : ITrigger
     {
-        if (!_triggers.Contains(typeof(T)))
-            _triggers.Add(typeof(T));
+        if (!_triggers.Where(x => x.Type == typeof(T)).Any())
+            _triggers.Add(GetDescriptor(typeof(T)));
     }
 
     public void AddTriggersFromAppDomain()
@@ -37,6 +37,7 @@ public class TriggerService : ITriggerService
                 t.IsClass &&
                 !t.IsAbstract &&
                 baseEventType.IsAssignableFrom(t))
+            .Select(GetDescriptor)
             .ToList();
         
         _triggers.AddRange(types);
@@ -49,6 +50,7 @@ public class TriggerService : ITriggerService
         var types = typeof(T).Assembly
             .GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && baseEventType.IsAssignableFrom(t))
+            .Select(GetDescriptor)
             .ToList();
 
         _triggers.AddRange(types);
@@ -57,5 +59,18 @@ public class TriggerService : ITriggerService
     public void ClearTriggers()
     {
         _triggers.Clear();
+    }
+
+    private TriggerDescriptor GetDescriptor(Type type)
+    {
+        var attr = type.GetCustomAttribute<TriggerAttribute>();
+
+        return new TriggerDescriptor
+        (
+            type.AssemblyQualifiedName ?? "Unknown",
+            type,
+            attr?.DisplayName ?? "", 
+            attr?.Description ?? ""
+        );
     }
 }

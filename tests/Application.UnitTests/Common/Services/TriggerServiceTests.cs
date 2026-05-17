@@ -16,9 +16,9 @@ public class TriggerServiceTest
         svc.AddTriggersFromAssembly<TriggerServiceTest>();
         svc.Triggers.Should().HaveCount(3);
 
-        svc.Triggers.Where(x => x == typeof(TestEventOne)).Should().HaveCount(1);
-        svc.Triggers.Where(x => x == typeof(TestEventTwo)).Should().HaveCount(1);
-        svc.Triggers.Where(x => x == typeof(TestEventThree)).Should().HaveCount(1);
+        svc.Triggers.Where(x => x.Type == typeof(TestEventOne)).Should().HaveCount(1);
+        svc.Triggers.Where(x => x.Type == typeof(TestEventTwo)).Should().HaveCount(1);
+        svc.Triggers.Where(x => x.Type == typeof(TestEventThree)).Should().HaveCount(1);
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class TriggerServiceTest
 
         foreach (var trigger in svc.Triggers)
         {
-            trigger.Should().BeAssignableTo<ITrigger>();
+            trigger.Type.Should().BeAssignableTo<ITrigger>();
         };
     }
 
@@ -45,7 +45,7 @@ public class TriggerServiceTest
         svc.AddTrigger<TestEventOne>();
 
         svc.Triggers.Should().HaveCount(1);
-        svc.Triggers.Where(x => x == typeof(TestEventOne)).Should().HaveCount(1);
+        svc.Triggers.Where(x => x.Type == typeof(TestEventOne)).Should().HaveCount(1);
     }
 
     [Test]

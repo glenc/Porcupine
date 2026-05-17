@@ -20,16 +20,14 @@ public class EventTriggerHandlerTests : BaseTestFixture
         using var scope = CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        var triggerService = new TriggerService();
-
         var sender = Mock.Of<ISender>();
 
-        var handler = new IndustryEventTriggerHandler<IndustryCreatedEvent>(context, triggerService, sender);
+        var handler = new IndustryEventTriggerHandler<IndustryCreatedEvent>(context, sender);
 
         await handler.Handle(new IndustryCreatedEvent(new Industry("Test")), CancellationToken.None);
 
         Mock.Get(sender).Verify(x => x.Send(
-            It.IsAny<CreateIndustryCommand>(),
+            It.IsAny<FakeAction>(),
             It.IsAny<CancellationToken>()
         ), Times.Never);
     }
@@ -40,18 +38,16 @@ public class EventTriggerHandlerTests : BaseTestFixture
         using var scope = CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        var triggerService = new TriggerService();
-
         var sender = Mock.Of<ISender>();
 
-        var handler = new IndustryEventTriggerHandler<IndustryUpdatedEvent>(context, triggerService, sender);
+        var handler = new IndustryEventTriggerHandler<IndustryUpdatedEvent>(context, sender);
 
         var changes = new Dictionary<string, object?>{["Name"] = "Test"};
         
         await handler.Handle(new IndustryUpdatedEvent(new Industry("Not Test"), changes), CancellationToken.None);
 
         Mock.Get(sender).Verify(x => x.Send(
-            It.IsAny<CreateIndustryCommand>(),
+            It.IsAny<FakeAction>(),
             It.IsAny<CancellationToken>()
         ), Times.Once);
     }
@@ -62,18 +58,16 @@ public class EventTriggerHandlerTests : BaseTestFixture
         using var scope = CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        var triggerService = new TriggerService();
-
         var sender = Mock.Of<ISender>();
 
-        var handler = new IndustryEventTriggerHandler<IndustryUpdatedEvent>(context, triggerService, sender);
+        var handler = new IndustryEventTriggerHandler<IndustryUpdatedEvent>(context, sender);
 
         var changes = new Dictionary<string, object?>{["Name"] = "Old Test"};
         
         await handler.Handle(new IndustryUpdatedEvent(new Industry("Test"), changes), CancellationToken.None);
 
         Mock.Get(sender).Verify(x => x.Send(
-            It.IsAny<CreateIndustryCommand>(),
+            It.IsAny<FakeAction>(),
             It.IsAny<CancellationToken>()
         ), Times.Exactly(2));
     }
@@ -84,18 +78,16 @@ public class EventTriggerHandlerTests : BaseTestFixture
         using var scope = CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        var triggerService = new TriggerService();
-
         var sender = Mock.Of<ISender>();
 
-        var handler = new IndustryEventTriggerHandler<IndustryUpdatedEvent>(context, triggerService, sender);
+        var handler = new IndustryEventTriggerHandler<IndustryUpdatedEvent>(context, sender);
 
         var changes = new Dictionary<string, object?>{["Name"] = "Old Test"};
         
         await handler.Handle(new IndustryUpdatedEvent(new Industry("TestTwo"), changes), CancellationToken.None);
 
         Mock.Get(sender).Verify(x => x.Send(
-            It.IsAny<CreateIndustryCommand>(),
+            It.IsAny<FakeAction>(),
             It.IsAny<CancellationToken>()
         ), Times.Exactly(3));
     }
