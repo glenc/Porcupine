@@ -34,3 +34,5 @@
 ## Scratch Pad ##
 Porcupine.Domain.Events.OrganizationCreatedEvent, Porcupine.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 Porcupine.Domain.Events.OrganizationUpdatedEvent, Porcupine.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+
+Porcupine.Application.Organizations.Commands.UpdateOrganization.UpdateOrganizationCommand, Porcupine.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null

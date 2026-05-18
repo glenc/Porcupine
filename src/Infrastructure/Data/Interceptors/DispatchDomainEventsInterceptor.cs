@@ -11,17 +11,25 @@ public class DispatchDomainEventsInterceptor(IMediator mediator) : SaveChangesIn
 
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
-        DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
-
         return base.SavingChanges(eventData, result);
 
     }
 
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
-        await DispatchDomainEvents(eventData.Context);
-
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
+    }
+
+    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+    {
+        DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
+        return result;
+    }
+
+    public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    {
+        await DispatchDomainEvents(eventData.Context);
+        return result;
     }
 
     public async Task DispatchDomainEvents(DbContext? context)
