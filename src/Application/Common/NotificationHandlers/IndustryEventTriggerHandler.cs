@@ -10,6 +10,6 @@ public class IndustryEventTriggerHandler<TNotification>(IApplicationDbContext co
 {
     public async Task Handle(TNotification notification, CancellationToken cancellationToken)
     {
-        await HandleTrigger(notification);
+        await HandleTrigger(notification, cancellationToken);
     }
 }

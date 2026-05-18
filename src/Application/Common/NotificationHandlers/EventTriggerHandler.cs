@@ -6,6 +6,7 @@ using Porcupine.Domain.Triggers;
 using Porcupine.Application.Industries.Commands.CreateIndustry;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
+using Porcupine.Application.Common.Services;
 
 namespace Porcupine.Application.Common.NotificationHandlers;
 
@@ -14,7 +15,7 @@ public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context
 {
     private readonly IApplicationDbContext _context = context;
 
-    protected async Task HandleTrigger(IDomainEventTrigger<TEntity> trigger)
+    protected async Task HandleTrigger(IDomainEventTrigger<TEntity> trigger, CancellationToken cancellationToken)
     {
         var triggerName = trigger.GetType().AssemblyQualifiedName;
 
@@ -29,8 +30,11 @@ public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context
             // check criteria
             if (MatchesFilter(trigger.Entity, rule.Criteria))
             {
-                Console.WriteLine($"TRIGGER {trigger.GetType().Name} for {trigger.Entity.GetType()}.{trigger.Entity.Id}");
-                await sender.Send(new FakeAction(), CancellationToken.None);
+                foreach (var action in rule.Actions)
+                {
+                    var cmd = CommandFactory.CreateCommand(action.GetCommandType(), trigger.Entity, action.CommandTemplate);
+                    await sender.Send(cmd, cancellationToken);
+                }
             }
         }
     }
@@ -51,5 +55,3 @@ public abstract class EventTriggerHandler<TEntity>(IApplicationDbContext context
         return (bool)lambda.Compile().DynamicInvoke(obj)!;
     }
 }
-
-public record FakeAction : IRequest { }

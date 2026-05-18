@@ -10,6 +10,6 @@ public class MarketSegmentEventTriggerHandler<TNotification>(IApplicationDbConte
 {
     public async Task Handle(TNotification notification, CancellationToken cancellationToken)
     {
-        await HandleTrigger(notification);
+        await HandleTrigger(notification, cancellationToken);
     }
 }

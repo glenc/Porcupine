@@ -10,6 +10,6 @@ public class LifecycleStageEventTriggerHandler<TNotification>(IApplicationDbCont
 {
     public async Task Handle(TNotification notification, CancellationToken cancellationToken)
     {
-        await HandleTrigger(notification);
+        await HandleTrigger(notification, cancellationToken);
     }
 }
